@@ -34,7 +34,10 @@ class GoogleGeocode implements Geocode
      */
     public function searchLocationByCity($city)
     {
-        $query = "address={$city}&key={$this->apiKey}";
+        $query = http_build_query([
+            'address' => $city,
+            'key' => $this->apiKey
+        ]);
 
         $response = json_decode(file_get_contents($this->url . $query), true);
 
