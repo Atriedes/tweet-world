@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tweet World!</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url('homepage') }}css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url('homepage') }}css/half-slider.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+<!-- Half Page Image Background Carousel Header -->
+<header class="carousel slide">
+    <!-- Wrapper for Slides -->
+    <div class="carousel-inner" style="height: 150%">
+        <div class="fill" id="map"></div>
+    </div>
+
+</header>
+
+<!-- Page Content -->
+<div class="container-fluid" style="margin-top: 10%">
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form" method="post" action="{{ url('homepage') }}">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control input-lg" name="location" placeholder="Your location (City, State, ZIP)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-lg" type="submit">Search</button>
+                    </span>
+                    <span class="input-group-btn">
+                        <a href="{{ url('history') }}" class="btn btn-default btn-lg">History</a>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{{ url('homepage') }}js/jquery.js"></script>
+<script src="{{ url('homepage') }}js/bootstrap.min.js"></script>
+
+<script
+        src="https://maps.googleapis.com/maps/api/js?key={{ app.google_auth.google_api_key }}">
+
+</script>
+<script src='http://google-maps-utility-library-v3.googlecode.com/svn/trunk/maplabel/src/maplabel-compiled.js'></script>
+
+<script>
+    // This example displays a marker at the center of Australia.
+    // When the user clicks the marker, an info window opens.
+
+    function init() {
+        var bounds = new google.maps.LatLngBounds();
+        var coordinate = {{ default_geo }};
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 9,
+            center: coordinate
+        });
+
+        var mapLabel = new MapLabel({
+            text: '{{ label }}',
+            position: new google.maps.LatLng(coordinate.lat +0.26, coordinate.lng),
+            map: map,
+            fontSize: 15,
+            align: 'center',
+            strokeWeight: 4
+        });
+        mapLabel.set('position', new google.maps.LatLng(coordinate.lat +0.26, coordinate.lng));
+
+        var markers = {{ locations|raw }};
+        var statuses = {{ statuses|raw }};
+
+        var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+        for( i = 0; i < markers.length; i++ ) {
+            var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+            bounds.extend(position);
+            marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                icon: markers[i][0]
+            });
+
+            // Allow each marker to have an info window
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infoWindow.setContent(statuses[i][0]);
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
+
+            // Automatically center the map fitting all markers on the screen
+            map.fitBounds(bounds);
+        }
+
+        var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+            this.setZoom(9);
+            google.maps.event.removeListener(boundsListener);
+        });
+    }
+    $(document).ready(function () {
+       init();
+    });
+</script>
+</body>
+
+</html>
