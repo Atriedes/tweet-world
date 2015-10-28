@@ -7,7 +7,6 @@ $app = new \Silex\Application(require __DIR__ . '/../app/config.php');
 /**
  * register service provider
  */
-$app->register(new \Silex\Provider\FormServiceProvider());
 $app->register(new \Silex\Provider\SessionServiceProvider());
 $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new \Silex\Provider\HttpFragmentServiceProvider());
