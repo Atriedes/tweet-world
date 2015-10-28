@@ -24,6 +24,10 @@ class SqliteStorage implements Storage
         $this->db = $db;
     }
 
+    /**
+     * @param string $userId
+     * @param string $location
+     */
     public function addUserHistory($userId, $location)
     {
         $history = $this->db->createQueryBuilder()
@@ -43,6 +47,9 @@ class SqliteStorage implements Storage
             );
         }
 
+        /**
+         * update timestamp only if location exist
+         */
         $this->db->update(
             'user_history',
             [
@@ -57,7 +64,7 @@ class SqliteStorage implements Storage
     }
 
     /**
-     * @param $userId
+     * @param string $userId
      * @return array
      */
     public function getUserHistory($userId)
@@ -74,8 +81,8 @@ class SqliteStorage implements Storage
     }
 
     /**
-     * @param $location
-     * @param $data
+     * @param string $location
+     * @param array $data
      */
     public function cacheSearchResult($location, $data)
     {
@@ -111,7 +118,7 @@ class SqliteStorage implements Storage
     }
 
     /**
-     * @param $location
+     * @param string $location
      * @return array
      */
     public function getSearchResultCache($location)

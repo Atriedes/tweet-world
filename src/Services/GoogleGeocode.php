@@ -23,7 +23,7 @@ class GoogleGeocode implements Geocode
     /**
      * @param string $apiKey
      */
-    public function construct($apiKey)
+    public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
     }

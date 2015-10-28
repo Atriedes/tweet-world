@@ -7,8 +7,10 @@ use Jowy\RabbitInternet\Contracts\TwitterService;
 use Jowy\RabbitInternet\Services\Search;
 use Jowy\RabbitInternet\Services\SqliteStorage;
 use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class MainController
@@ -21,6 +23,10 @@ class MainController implements ControllerProviderInterface
      */
     private $app;
 
+    /**
+     * @param Application $app
+     * @return ControllerCollection
+     */
     public function connect(Application $app)
     {
         $this->app = $app;
@@ -32,7 +38,7 @@ class MainController implements ControllerProviderInterface
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return Response
      */
     public function indexAction(Request $request)
     {
@@ -57,6 +63,9 @@ class MainController implements ControllerProviderInterface
 
         $geometry = $geocode->searchLocationByCity($request->get('location'));
 
+        /**
+         * return not found if location doesnt exist
+         */
         if (count($geometry) === 0) {
             $data = [
                 'default_geo' => '{lat: -6.21885, lng: 106.89606}',
@@ -70,6 +79,9 @@ class MainController implements ControllerProviderInterface
         $lat = $geometry[0]['geometry']['location']['lat'];
         $lng = $geometry[0]['geometry']['location']['lng'];
 
+        /**
+         * perform twitter search
+         */
         $query = $search->search(
             $request->get('location'),
             $lat,
@@ -88,6 +100,10 @@ class MainController implements ControllerProviderInterface
         return $this->app['twig']->render('index.twig', $data);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function historyAction(Request $request)
     {
         /**

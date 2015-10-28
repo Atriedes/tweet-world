@@ -8,9 +8,12 @@ namespace Jowy\RabbitInternet\Contracts;
  */
 interface TwitterService
 {
-    public function searchByKeyword($keyword);
-
-    public function searchByGeoLocation($latitude, $longitude, $radius);
-
+    /**
+     * @param string $keyword
+     * @param float $latitude
+     * @param float $longitude
+     * @param string $radius
+     * @return array
+     */
     public function searchByKeywordAndGeoLocation($keyword, $latitude, $longitude, $radius);
 }

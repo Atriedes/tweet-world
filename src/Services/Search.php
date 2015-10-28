@@ -100,6 +100,9 @@ class Search
      */
     private function getResultFromCache($keyword)
     {
+        /**
+         * return immediately if no cache found
+         */
         $cache = $this->storage->getSearchResultCache($keyword);
         if (count($cache) === 0) {
             return false;
@@ -107,6 +110,9 @@ class Search
 
         $diff = strtotime(date('Y-m-d H:i:s')) - strtotime($cache[0]['time']);
 
+        /**
+         * check cache if expired
+         */
         if ($diff <= $this->cacheTtl) {
             return unserialize($cache[0]['cache']);
         }

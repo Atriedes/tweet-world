@@ -25,30 +25,12 @@ class Twitter implements TwitterService
         $this->client = $client;
     }
 
-    public function searchByGeoLocation($latitude, $longitude, $radius)
-    {
-        $response = $this->client->setGetfield("?geocode={$latitude},{$longitude},{$radius}")
-            ->buildOauth($this->searchUrl, 'GET')
-            ->performRequest();
-
-        return json_decode($response);
-    }
-
-    public function searchByKeyword($keyword)
-    {
-        $response = $this->client->setGetfield("?q={$keyword}")
-            ->buildOauth($this->searchUrl, 'GET')
-            ->performRequest();
-
-        return json_decode($response);
-    }
-
     /**
-     * @param $keyword
-     * @param $latitude
-     * @param $longitude
-     * @param $radius
-     * @return mixed
+     * @param string $keyword
+     * @param float $latitude
+     * @param float $longitude
+     * @param string $radius
+     * @return array
      * @throws \Exception
      */
     public function searchByKeywordAndGeoLocation($keyword, $latitude, $longitude, $radius)
