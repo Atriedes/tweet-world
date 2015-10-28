@@ -1,3 +1,8 @@
 .idea/
 vendor/
-tests/_output/
+!app/cache/.gitkeep
+!app/cache/profiler/.gitkeep
+!app/cache/templates/.gitkeep
+!app/logs/.gitkeep
+app/cache/
+app/logs/
